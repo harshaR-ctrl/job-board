@@ -3,10 +3,10 @@
 .gitignore
 .gitattributes
 
-# Build artifacts
-target/
-*.jar
-*.class
+# Build artifacts - Commented out for Render Docker builds
+# target/
+# *.jar
+# *.class
 
 # IDE
 .vscode/
@@ -17,9 +17,9 @@ target/
 *~
 .DS_Store
 
-# Maven
-.mvn/wrapper/maven-wrapper.jar
-.mvn/wrapper/maven-wrapper.properties
+# Maven - Keep wrapper for builds
+# .mvn/wrapper/maven-wrapper.jar
+# .mvn/wrapper/maven-wrapper.properties
 
 # Node (if any)
 node_modules/
