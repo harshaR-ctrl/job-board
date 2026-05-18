@@ -45,6 +45,13 @@ public class JobServiceImpl implements JobService {
         User employer = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
 
+        // Validate salary constraints
+        if (request.getSalaryMin() != null && request.getSalaryMax() != null) {
+            if (request.getSalaryMin().compareTo(request.getSalaryMax()) > 0) {
+                throw new IllegalArgumentException("Salary minimum cannot be greater than salary maximum");
+            }
+        }
+
         JobListing job = jobMapper.toEntity(request);
         job.setEmployer(employer);
         job.setStatus(JobStatus.OPEN);
@@ -64,6 +71,13 @@ public class JobServiceImpl implements JobService {
                 .orElseThrow(() -> new ResourceNotFoundException("Job", "id", id));
 
         validateOwnership(job, email);
+
+        // Validate salary constraints
+        if (request.getSalaryMin() != null && request.getSalaryMax() != null) {
+            if (request.getSalaryMin().compareTo(request.getSalaryMax()) > 0) {
+                throw new IllegalArgumentException("Salary minimum cannot be greater than salary maximum");
+            }
+        }
 
         job.setTitle(request.getTitle());
         job.setDescription(request.getDescription());
@@ -114,7 +128,7 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional(readOnly = true)
     public Page<JobResponseDto> searchJobs(String title, String location, BigDecimal minSalary, BigDecimal maxSalary, Pageable pageable) {
-        return jobRepository.searchJobs(title, location, minSalary, maxSalary, JobStatus.OPEN, pageable)
+        return jobRepository.findByStatus(JobStatus.OPEN, pageable)
                 .map(jobMapper::toDto);
     }
 

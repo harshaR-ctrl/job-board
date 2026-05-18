@@ -3,6 +3,7 @@ package com.example.jobboard.exception;
 import com.example.jobboard.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -110,6 +111,21 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.<Void>builder()
                         .success(false)
                         .message(ex.getMessage())
+                        .build());
+    }
+
+    /**
+     * Handles access denied exceptions raised by Spring Security.
+     *
+     * @param ex the thrown exception
+     * @return 403 response with error message
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.<Void>builder()
+                        .success(false)
+                        .message("Access denied: " + ex.getMessage())
                         .build());
     }
 

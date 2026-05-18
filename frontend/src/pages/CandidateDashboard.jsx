@@ -127,7 +127,7 @@ export default function CandidateDashboard() {
                   </button>
                 )}
                 <Link
-                  to={`/jobs/${app.id}`}
+                  to={`/jobs/${app.jobId}`}
                   className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-gray-900 transition-all"
                   title="View Job"
                 >

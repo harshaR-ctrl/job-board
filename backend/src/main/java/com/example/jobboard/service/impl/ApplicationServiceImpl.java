@@ -230,11 +230,14 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ResourceNotFoundException("Resume", "candidateId", candidate.getId());
         }
 
-        try {
-            Path filePath = Paths.get(uploadDir).resolve(profile.getResumeUrl()).normalize();
-            return new InputStreamResource(new FileInputStream(filePath.toFile()));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read resume file: " + e.getMessage(), e);
-        }
+        Path uploadDirPath = Paths.get(uploadDir).toAbsolutePath();
+            Path filePath = uploadDirPath.resolve(profile.getResumeUrl()).normalize();
+            
+            // Prevent path traversal attacks
+            if (!filePath.toAbsolutePath().startsWith(uploadDirPath)) {
+                throw new UnauthorizedException("Invalid file path");
+            }
+            
+            return new org.springframework.core.io.FileSystemResource(filePath.toFile());
     }
 }

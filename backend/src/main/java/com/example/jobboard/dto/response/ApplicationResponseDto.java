@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class ApplicationResponseDto {
 
     private Long id;
+    private Long jobId;
     private String jobTitle;
     private String companyName;
     private String candidateName;

@@ -36,7 +36,13 @@ public interface JobRepository extends JpaRepository<JobListing, Long>, JpaSpeci
      * @param pageable  pagination parameters
      * @return a page of matching job listings
      */
-    @Query("SELECT j FROM JobListing j LEFT JOIN FETCH j.employer WHERE " +
+    @Query(value = "SELECT j FROM JobListing j WHERE " +
+           "(:title IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
+           "(:location IS NULL OR LOWER(j.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
+           "(:minSalary IS NULL OR j.salaryMin >= :minSalary) AND " +
+           "(:maxSalary IS NULL OR j.salaryMax <= :maxSalary) AND " +
+           "(:status IS NULL OR j.status = :status)",
+           countQuery = "SELECT COUNT(j) FROM JobListing j WHERE " +
            "(:title IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
            "(:location IS NULL OR LOWER(j.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
            "(:minSalary IS NULL OR j.salaryMin >= :minSalary) AND " +
@@ -50,4 +56,8 @@ public interface JobRepository extends JpaRepository<JobListing, Long>, JpaSpeci
             @Param("status") JobStatus status,
             Pageable pageable
     );
+
+    Page<JobListing> findByStatus(JobStatus status, Pageable pageable);
+
+    Page<JobListing> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

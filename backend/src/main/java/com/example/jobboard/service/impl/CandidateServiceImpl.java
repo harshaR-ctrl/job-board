@@ -98,6 +98,13 @@ public class CandidateServiceImpl implements CandidateService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
 
+        // Validate file type - only PDF and DOC/DOCX allowed
+        String contentType = file.getContentType();
+        String filename = file.getOriginalFilename();
+        if (filename == null || !isValidResumeFile(filename, contentType)) {
+            throw new IllegalArgumentException("Invalid resume file type. Only PDF and Word documents are allowed.");
+        }
+
         CandidateProfile profile = candidateProfileRepository.findByUserId(user.getId())
                 .orElseGet(() -> {
                     CandidateProfile newProfile = CandidateProfile.builder()
@@ -133,6 +140,20 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     /**
+     * Validates that the uploaded file is a valid resume file type.
+     */
+    private boolean isValidResumeFile(String filename, String contentType) {
+        String lowerFilename = filename.toLowerCase();
+        return (lowerFilename.endsWith(".pdf") || 
+                lowerFilename.endsWith(".doc") || 
+                lowerFilename.endsWith(".docx")) &&
+               (contentType != null && 
+                (contentType.contains("pdf") || 
+                 contentType.contains("word") || 
+                 contentType.contains("document")));
+    }
+
+    /**
      * {@inheritDoc}
      * Serves the candidate's uploaded resume file.
      */
@@ -149,11 +170,14 @@ public class CandidateServiceImpl implements CandidateService {
             throw new ResourceNotFoundException("Resume", "userId", user.getId());
         }
 
-        try {
-            Path filePath = Paths.get(uploadDir).resolve(profile.getResumeUrl()).normalize();
-            return new InputStreamResource(new FileInputStream(filePath.toFile()));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read resume file: " + e.getMessage(), e);
+        Path uploadDirPath = Paths.get(uploadDir).toAbsolutePath();
+        Path filePath = uploadDirPath.resolve(profile.getResumeUrl()).normalize();
+        
+        // Prevent path traversal attacks
+        if (!filePath.toAbsolutePath().startsWith(uploadDirPath)) {
+            throw new RuntimeException("Invalid file path");
         }
+        
+        return new org.springframework.core.io.FileSystemResource(filePath.toFile());
     }
 }

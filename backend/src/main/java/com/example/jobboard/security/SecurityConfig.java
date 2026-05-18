@@ -49,8 +49,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/jobs/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
                 // Swagger/OpenAPI endpoints
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                 // All other endpoints require authentication

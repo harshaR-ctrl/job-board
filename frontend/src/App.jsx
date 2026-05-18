@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -15,10 +16,11 @@ import Profile from './pages/Profile';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-grid-pattern">
-      <Navbar />
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <Routes>
+    <ErrorBoundary>
+      <div className="min-h-screen bg-grid-pattern">
+        <Navbar />
+        <main className="max-w-7xl mx-auto px-6 py-8">
+          <Routes>
           <Route path="/" element={<JobBoard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -61,5 +63,6 @@ export default function App() {
         </Routes>
       </main>
     </div>
+    </ErrorBoundary>
   );
 }

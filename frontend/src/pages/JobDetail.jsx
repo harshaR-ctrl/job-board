@@ -161,7 +161,7 @@ export default function JobDetail() {
       <div className="glass-card p-8">
         <h2 className="text-xl font-semibold text-dark-900 mb-4">Job Description</h2>
         <div className="prose prose-invert max-w-none">
-          {job.description.split('\n').map((paragraph, i) => (
+          {(job.description || '').split('\n').map((paragraph, i) => (
             <p key={i} className="text-dark-700 leading-relaxed mb-4">
               {paragraph}
             </p>

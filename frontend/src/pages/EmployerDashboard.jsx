@@ -42,21 +42,31 @@ export default function EmployerDashboard() {
     resolver: zodResolver(jobSchema),
   });
 
+  const normalizeSalary = (value) => (value === '' || value === undefined ? null : value);
+
   const onCreateJob = async (data) => {
     try {
       const payload = {
         ...data,
-        salaryMin: data.salaryMin || null,
-        salaryMax: data.salaryMax || null,
+        salaryMin: normalizeSalary(data.salaryMin),
+        salaryMax: normalizeSalary(data.salaryMax),
       };
       const response = await createJobMutation.mutateAsync(payload);
-      if (response.success) {
+
+      if (response?.success) {
         toast.success('Job created successfully!');
         setShowCreateForm(false);
         reset();
+      } else {
+        toast.error(response?.message || 'Failed to create job');
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to create job');
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.data?.message ||
+        error.message ||
+        'Failed to create job';
+      toast.error(message);
     }
   };
 

@@ -4,6 +4,7 @@ import com.example.jobboard.dto.request.JobRequestDto;
 import com.example.jobboard.dto.response.JobResponseDto;
 import com.example.jobboard.security.CustomUserDetailsService;
 import com.example.jobboard.security.JwtUtil;
+import com.example.jobboard.security.SecurityConfig;
 import com.example.jobboard.service.JobService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Unit tests for {@link JobController} using @WebMvcTest with role-based security mocking.
  */
+@Import(SecurityConfig.class)
 @WebMvcTest(JobController.class)
 class JobControllerTest {
 

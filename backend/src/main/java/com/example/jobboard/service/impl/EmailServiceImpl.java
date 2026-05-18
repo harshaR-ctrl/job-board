@@ -77,7 +77,9 @@ public class EmailServiceImpl implements EmailService {
     @Async
     public void sendPasswordResetEmail(String toEmail, String name, String token) {
         try {
-            String resetLink = "http://localhost:5173/reset-password?token=" + token;
+            String frontendUrl = System.getenv("FRONTEND_URL") != null ? 
+                System.getenv("FRONTEND_URL") : "http://localhost:5173";
+            String resetLink = frontendUrl + "/reset-password?token=" + token;
 
             Context context = new Context();
             context.setVariable("name", name);
@@ -107,7 +109,9 @@ public class EmailServiceImpl implements EmailService {
     @Async
     public void sendVerificationEmail(String toEmail, String name, String token) {
         try {
-            String verifyLink = "http://localhost:5173/verify-email?token=" + token;
+            String frontendUrl = System.getenv("FRONTEND_URL") != null ? 
+                System.getenv("FRONTEND_URL") : "http://localhost:5173";
+            String verifyLink = frontendUrl + "/verify-email?token=" + token;
 
             Context context = new Context();
             context.setVariable("name", name);

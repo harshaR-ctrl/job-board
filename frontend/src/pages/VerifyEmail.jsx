@@ -18,16 +18,13 @@ export default function VerifyEmail() {
     }
     verifyMutation.mutateAsync(token)
       .then(() => {
-        if (user) {
-          user.verified = true;
-          const stored = JSON.parse(localStorage.getItem('user') || '{}');
-          stored.verified = true;
-          localStorage.setItem('user', JSON.stringify(stored));
-        }
+        const stored = JSON.parse(localStorage.getItem('user') || '{}');
+        stored.verified = true;
+        localStorage.setItem('user', JSON.stringify(stored));
         setStatus('success');
       })
       .catch(() => setStatus('error'));
-  }, []);
+  }, [token, verifyMutation]);
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center animate-fade-in">

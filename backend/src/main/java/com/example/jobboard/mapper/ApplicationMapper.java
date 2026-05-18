@@ -27,6 +27,7 @@ public class ApplicationMapper {
     public ApplicationResponseDto toDto(Application entity) {
         return ApplicationResponseDto.builder()
                 .id(entity.getId())
+                .jobId(entity.getJob() != null ? entity.getJob().getId() : null)
                 .jobTitle(entity.getJob() != null ? entity.getJob().getTitle() : "Unknown")
                 .companyName(entity.getJob() != null && entity.getJob().getEmployer() != null
                         ? entity.getJob().getEmployer().getName() : "Unknown")

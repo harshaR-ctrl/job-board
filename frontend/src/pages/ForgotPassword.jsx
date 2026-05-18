@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForgotPassword } from '../hooks/useApi';
+import toast from 'react-hot-toast';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
 
 export default function ForgotPassword() {
@@ -13,8 +14,8 @@ export default function ForgotPassword() {
     try {
       await forgotMutation.mutateAsync({ email });
       setSent(true);
-    } catch {
-      setSent(true);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to send reset email');
     }
   };
 

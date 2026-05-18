@@ -14,6 +14,7 @@ import com.example.jobboard.enums.Role;
 import com.example.jobboard.exception.ResourceNotFoundException;
 import com.example.jobboard.repository.CandidateProfileRepository;
 import com.example.jobboard.repository.EmailVerificationTokenRepository;
+import com.example.jobboard.repository.EmployerProfileRepository;
 import com.example.jobboard.repository.PasswordResetTokenRepository;
 import com.example.jobboard.repository.UserRepository;
 import com.example.jobboard.security.JwtUtil;
@@ -25,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -38,29 +38,29 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final CandidateProfileRepository candidateProfileRepository;
+    private final EmployerProfileRepository employerProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
-    private final EntityManager entityManager;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailVerificationTokenRepository emailVerificationTokenRepository;
     private final EmailService emailService;
 
     public AuthServiceImpl(UserRepository userRepository,
                            CandidateProfileRepository candidateProfileRepository,
+                           EmployerProfileRepository employerProfileRepository,
                            PasswordEncoder passwordEncoder,
                            JwtUtil jwtUtil,
                            AuthenticationManager authenticationManager,
-                           EntityManager entityManager,
                            PasswordResetTokenRepository passwordResetTokenRepository,
                            EmailVerificationTokenRepository emailVerificationTokenRepository,
                            EmailService emailService) {
         this.userRepository = userRepository;
         this.candidateProfileRepository = candidateProfileRepository;
+        this.employerProfileRepository = employerProfileRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
-        this.entityManager = entityManager;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
         this.emailService = emailService;
@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
                     .website(request.getWebsite())
                     .description(request.getCompanyDescription())
                     .build();
-            entityManager.persist(profile);
+            employerProfileRepository.save(profile);
         } else {
             CandidateProfile profile = CandidateProfile.builder()
                     .user(user)
