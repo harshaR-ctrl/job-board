@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: job-board-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    region: oregon
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: job-board-db
+          propertyName: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: UPLOAD_DIR
+        value: /tmp/uploads/resumes
+      - key: SHOW_SQL
+        value: "false"
+
+databases:
+  - name: job-board-db
+    plan: free
+    databaseName: jobboard
+    ipAllowList: []
